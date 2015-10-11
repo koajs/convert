@@ -1,0 +1,25 @@
+{
+  "name": "koa-convert",
+  "version": "0.0.1",
+  "description": "convert koa generator-based middleware to promise-based middleware",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gyson/koa-convert.git"
+  },
+  "author": "gyson <eilian.yunsong@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gyson/koa-convert/issues"
+  },
+  "homepage": "https://github.com/gyson/koa-convert#readme",
+  "dependencies": {
+    "co": "^4.6.0"
+  },
+  "devDependencies": {
+    "mocha": "^2.3.3"
+  }
+}
