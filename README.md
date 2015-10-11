@@ -17,6 +17,8 @@ $ npm install koa-convert
 ## Usage
 
 ```js
+const convert = require('koa-convert')
+
 //
 // convert a generator-based middleware to promise-based middleware
 //
