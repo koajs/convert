@@ -1,6 +1,11 @@
 {
   "name": "koa-convert",
-  "version": "0.0.1",
+  "version": "0.0.2",
+  "keywords": [
+    "koa",
+    "middleware",
+    "convert"
+  ]
   "description": "convert koa generator-based middleware to promise-based middleware",
   "main": "index.js",
   "scripts": {
