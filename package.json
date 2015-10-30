@@ -6,7 +6,11 @@
     "middleware",
     "convert"
   ],
-  "description": "convert koa generator-based middleware to promise-based middleware",
+  "description": "convert koa legacy generator-based middleware to promise-based middleware",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gyson/koa-convert.git"
+  },
   "main": "index.js",
   "scripts": {
     "test": "mocha test.js"
