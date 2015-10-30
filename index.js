@@ -6,7 +6,7 @@ module.exports = convert
 
 function convert (mw) {
   if (typeof mw !== 'function') {
-    throw new TypeError(mw + ' is not function')
+    throw new TypeError('middleware must be a function')
   }
   if (mw.constructor.name === 'GeneratorFunction') {
     return function (ctx, next) {
