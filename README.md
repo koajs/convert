@@ -1,5 +1,5 @@
 
-# koa-convert
+# koa-convert [![build status](https://travis-ci.org/gyson/koa-convert.svg)](https://travis-ci.org/gyson/koa-convert)
 
 Convert koa legacy ( v0.x & v1.x ) generator middleware to promise middleware ( v2.x ).
 
