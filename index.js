@@ -1,6 +1,7 @@
 'use strict'
 
 const co = require('co')
+const compose = require('koa-compose')
 
 module.exports = convert
 
@@ -16,6 +17,15 @@ function convert (mw) {
     // assume it's Promise-based middleware
     return mw
   }
+}
+
+// convert.compose(mw, mw, mw)
+// convert.compose([mw, mw, mw])
+convert.compose = function (arr) {
+  if (!Array.isArray(arr)) {
+    arr = Array.from(arguments)
+  }
+  return compose(arr.map(convert))
 }
 
 function * createGenerator (next) {

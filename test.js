@@ -5,9 +5,8 @@
 const co = require('co')
 const assert = require('assert')
 const convert = require('./index')
-const compose = require('koa-compose')
 
-describe('Koa Convert', () => {
+describe('convert()', () => {
   it('should works', () => {
     let call = []
     let ctx = {}
@@ -58,12 +57,14 @@ describe('Koa Convert', () => {
       assert.deepEqual(call, [1, 2, 3])
     })
   })
+})
 
-  it('should works with koa-compose', () => {
+describe('convert.compose()', () => {
+  it('should works', () => {
     let call = []
     let context = {}
     let _context
-    let mw = compose([
+    let mw = convert.compose([
       function * name (next) {
         call.push(1)
         yield next
@@ -98,11 +99,44 @@ describe('Koa Convert', () => {
         call.push(6)
         throw new Error()
       }
-    ].map(convert))
+    ])
 
     return mw(context).then(() => {
       assert.equal(context, _context)
       assert.deepEqual(call, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
+    })
+  })
+
+  it('should works too', () => {
+    let call = []
+    let context = {}
+    let _context
+    let mw = convert.compose(
+      (ctx, next) => {
+        call.push(1)
+        return next().catch(() => {
+          call.push(4)
+        })
+      },
+      function * (next) {
+        call.push(2)
+        yield next
+        call.push(-1) // should not call this
+      },
+      function * (next) {
+        call.push(3)
+        yield* next
+        call.push(-1) // should not call this
+      },
+      (ctx, next) => {
+        _context = ctx
+        return Promise.reject(new Error())
+      }
+    )
+
+    return mw(context).then(() => {
+      assert.equal(context, _context)
+      assert.deepEqual(call, [1, 2, 3, 4])
     })
   })
 })
