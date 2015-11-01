@@ -3,8 +3,10 @@
 'use strict'
 
 const co = require('co')
+const Koa = require('koa')
 const assert = require('assert')
 const convert = require('./index')
+const request = require('supertest')
 
 describe('convert()', () => {
   it('should work', () => {
@@ -138,5 +140,50 @@ describe('convert.compose()', () => {
       assert.equal(context, _context)
       assert.deepEqual(call, [1, 2, 3, 4])
     })
+  })
+})
+
+describe('migration snippet', () => {
+  let app = new Koa()
+
+  // snippet
+  const _use = app.use
+  app.use = x => _use.call(app, convert(x))
+  // end
+
+  app.use((ctx, next) => {
+    ctx.body = [1]
+    return next().then(() => {
+      ctx.body.push(9)
+    })
+  })
+
+  app.use(function * (next) {
+    this.body.push(2)
+    yield next
+    this.body.push(8)
+  })
+
+  app.use(function * (next) {
+    this.body.push(3)
+    yield* next
+    this.body.push(7)
+  })
+
+  app.use(co.wrap(function * (ctx, next) {
+    ctx.body.push(4)
+    yield next()
+    ctx.body.push(6)
+  }))
+
+  app.use(ctx => {
+    ctx.body.push(5)
+  })
+
+  it('should work', done => {
+    request(app.callback())
+      .get('/')
+      .expect(200, [1, 2, 3, 4, 5, 6, 7, 8, 9])
+      .end(done)
   })
 })
