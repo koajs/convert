@@ -7,7 +7,7 @@ const assert = require('assert')
 const convert = require('./index')
 
 describe('convert()', () => {
-  it('should works', () => {
+  it('should work', () => {
     let call = []
     let ctx = {}
     let mw = convert(function * (next) {
@@ -22,7 +22,7 @@ describe('convert()', () => {
     })
   })
 
-  it('should works with `yield next`', () => {
+  it('should work with `yield next`', () => {
     let call = []
     let ctx = {}
     let mw = convert(function * (next) {
@@ -40,7 +40,7 @@ describe('convert()', () => {
     })
   })
 
-  it('should works with `yield* next`', () => {
+  it('should work with `yield* next`', () => {
     let call = []
     let ctx = {}
     let mw = convert(function * (next) {
@@ -60,7 +60,7 @@ describe('convert()', () => {
 })
 
 describe('convert.compose()', () => {
-  it('should works', () => {
+  it('should work', () => {
     let call = []
     let context = {}
     let _context
@@ -107,7 +107,7 @@ describe('convert.compose()', () => {
     })
   })
 
-  it('should works too', () => {
+  it('should work too', () => {
     let call = []
     let context = {}
     let _context
