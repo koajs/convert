@@ -6,6 +6,14 @@
 
 Convert koa legacy ( 0.x & 1.x ) generator middleware to modern promise middleware ( 2.x ).
 
+It could also convert modern promise middleware back to legacy generator middleware ( useful to help modern middleware support koa 0.x or 1.x ).
+
+## Note
+
+It should be able to convert any legacy generator middleware to modern promise middleware ( or convert it back ).
+
+Please let me know ( send a issue ) if you fail to do so.
+
 ## Installation
 
 ```
@@ -97,20 +105,30 @@ function modernMiddleware (ctx, next) {
 
 #### `convert()`
 
-Convert legacy generator middleware to modern promise middleware
+Convert legacy generator middleware to modern promise middleware.
 
 ```js
-app.use(convert(legacyMiddleware))
+modernMiddleware = convert(legacyMiddleware)
 ```
 
 #### `convert.compose()`
 
-Convert and compose multiple middleware (could mix legacy and modern ones) and return modern promise middleware
+Convert and compose multiple middleware (could mix legacy and modern ones) and return modern promise middleware.
 
 ```js
-app.use(convert.compose(legacyMiddleware, modernMiddleware))
+composedModernMiddleware = convert.compose(legacyMiddleware, modernMiddleware)
 // or
-app.use(convert.compose([legacyMiddleware, modernMiddleware]))
+composedModernMiddleware = convert.compose([legacyMiddleware, modernMiddleware])
+```
+
+#### `convert.back()`
+
+Convert modern promise middleware back to legacy generator middleware.
+
+This is useful to help modern promise middleware support koa 0.x or 1.x.
+
+```js
+legacyMiddleware = convert.back(modernMiddleware)
 ```
 
 ## License
