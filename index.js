@@ -9,14 +9,17 @@ function convert (mw) {
   if (typeof mw !== 'function') {
     throw new TypeError('middleware must be a function')
   }
-  if (mw.constructor.name === 'GeneratorFunction') {
-    return function (ctx, next) {
-      return co.call(ctx, mw.call(ctx, createGenerator(next)))
-    }
-  } else {
+  if (mw.constructor.name !== 'GeneratorFunction') {
     // assume it's Promise-based middleware
     return mw
   }
+  return function (ctx, next) {
+    return co.call(ctx, mw.call(ctx, createGenerator(next)))
+  }
+}
+
+function * createGenerator (next) {
+  return yield next()
 }
 
 // convert.compose(mw, mw, mw)
@@ -28,6 +31,26 @@ convert.compose = function (arr) {
   return compose(arr.map(convert))
 }
 
-function * createGenerator (next) {
-  return yield next()
+convert.back = function (mw) {
+  if (typeof mw !== 'function') {
+    throw new TypeError('middleware must be a function')
+  }
+  if (mw.constructor.name === 'GeneratorFunction') {
+    // assume it's generator middleware
+    return mw
+  }
+  return function * (next) {
+    let ctx = this
+    let called = false
+    // no need try...catch here, it's ok even `mw()` throw exception
+    yield Promise.resolve(mw(ctx, function () {
+      if (called) {
+        // guard against multiple next() calls
+        // https://github.com/koajs/compose/blob/4e3e96baf58b817d71bd44a8c0d78bb42623aa95/index.js#L36
+        return Promise.reject(new Error('next() called multiple times'))
+      }
+      called = true
+      return co.call(ctx, next)
+    }))
+  }
 }

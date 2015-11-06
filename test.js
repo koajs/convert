@@ -4,6 +4,7 @@
 
 const co = require('co')
 const Koa = require('koa')
+const KoaV1 = require('koa-v1')
 const assert = require('assert')
 const convert = require('./index')
 const request = require('supertest')
@@ -140,6 +141,60 @@ describe('convert.compose()', () => {
       assert.equal(context, _context)
       assert.deepEqual(call, [1, 2, 3, 4])
     })
+  })
+})
+
+describe('convert.back()', () => {
+  it('should work with koa 1', done => {
+    let app = new KoaV1()
+
+    app.use(function * (next) {
+      this.body = [1]
+      yield next
+      this.body.push(6)
+    })
+
+    app.use(convert.back((ctx, next) => {
+      ctx.body.push(2)
+      return next().then(() => {
+        ctx.body.push(5)
+      })
+    }))
+
+    app.use(convert.back(co.wrap(function * (ctx, next) {
+      ctx.body.push(3)
+      yield next()
+      ctx.body.push(4)
+    })))
+
+    request(app.callback())
+      .get('/')
+      .expect(200, [1, 2, 3, 4, 5, 6])
+      .end(done)
+  })
+
+  it('should guard multiple calls', done => {
+    let app = new KoaV1()
+
+    app.use(function * (next) {
+      try {
+        this.body = [1]
+        yield next
+      } catch (e) {
+        this.body.push(e.message)
+      }
+    })
+
+    app.use(convert.back(co.wrap(function * (ctx, next) {
+      ctx.body.push(2)
+      yield next()
+      yield next() // this should throw new Error('next() called multiple times')
+    })))
+
+    request(app.callback())
+      .get('/')
+      .expect(200, [1, 2, 'next() called multiple times'])
+      .end(done)
   })
 })
 
