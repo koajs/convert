@@ -201,6 +201,11 @@ describe('convert.back()', () => {
       .expect(200, [1, 2, 'next() called multiple times'])
       .end(done)
   })
+
+  it('should inherit the original middleware name', () => {
+    let mw = convert.back(function testing (ctx, next) {})
+    assert.strictEqual(mw._name, 'testing')
+  })
 })
 
 describe('migration snippet', () => {

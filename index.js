@@ -41,7 +41,7 @@ convert.back = function (mw) {
     // assume it's generator middleware
     return mw
   }
-  return function * (next) {
+  const converted = function * (next) {
     let ctx = this
     let called = false
     // no need try...catch here, it's ok even `mw()` throw exception
@@ -55,4 +55,6 @@ convert.back = function (mw) {
       return co.call(ctx, next)
     }))
   }
+  converted._name = mw._name || mw.name
+  return converted
 }
