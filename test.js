@@ -25,6 +25,11 @@ describe('convert()', () => {
     })
   })
 
+  it('should inherit the original middleware name', () => {
+    let mw = convert(function * testing (next) {})
+    assert.strictEqual(mw._name, 'testing')
+  })
+
   it('should work with `yield next`', () => {
     let call = []
     let ctx = {}
