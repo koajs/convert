@@ -13,9 +13,11 @@ function convert (mw) {
     // assume it's Promise-based middleware
     return mw
   }
-  return function (ctx, next) {
+  const converted = function (ctx, next) {
     return co.call(ctx, mw.call(ctx, createGenerator(next)))
   }
+  converted._name = mw._name || mw.name
+  return converted
 }
 
 function * createGenerator (next) {
