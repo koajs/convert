@@ -10,9 +10,12 @@ It could also convert modern promise middleware back to legacy generator middlew
 
 ## Note
 
-It should be able to convert any legacy generator middleware to modern promise middleware ( or convert it back ).
+Router middleware is special case here. Because it reimplements middleware composition internally, we cannot not simply convert it.
 
-Please let me know ( send a issue ) if you fail to do so.
+You may use following packages for routing, which are koa 2.x ready now:
+
+* [koa-route](https://github.com/koajs/route)
+* [koa-simple-router](https://github.com/gyson/koa-simple-router)
 
 ## Installation
 
