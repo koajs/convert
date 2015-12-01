@@ -14,7 +14,7 @@ Router middleware is special case here. Because it reimplements middleware compo
 
 You may use following packages for routing, which are koa 2.x ready now:
 
-* [koa-route](https://github.com/koajs/route)
+* [koa-route@3.0.0](https://github.com/koajs/route/tree/next)
 * [koa-simple-router](https://github.com/gyson/koa-simple-router)
 
 ## Installation
