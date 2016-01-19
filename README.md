@@ -2,7 +2,7 @@
 # koa-convert
 
 [![npm version](https://img.shields.io/npm/v/koa-convert.svg)](https://npmjs.org/package/koa-convert)
-[![build status](https://travis-ci.org/gyson/koa-convert.svg)](https://travis-ci.org/gyson/koa-convert)
+[![build status](https://travis-ci.org/koajs/convert.svg)](https://travis-ci.org/koajs/convert)
 
 Convert koa legacy ( 0.x & 1.x ) generator middleware to modern promise middleware ( 2.x ).
 
