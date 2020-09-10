@@ -11,9 +11,9 @@ const request = require('supertest')
 
 describe('convert()', () => {
   it('should work', () => {
-    let call = []
-    let ctx = {}
-    let mw = convert(function * (next) {
+    const call = []
+    const ctx = {}
+    const mw = convert(function * (next) {
       assert.ok(ctx === this)
       call.push(1)
     })
@@ -26,14 +26,14 @@ describe('convert()', () => {
   })
 
   it('should inherit the original middleware name', () => {
-    let mw = convert(function * testing (next) {})
+    const mw = convert(function * testing (next) {})
     assert.strictEqual(mw._name, 'testing')
   })
 
   it('should work with `yield next`', () => {
-    let call = []
-    let ctx = {}
-    let mw = convert(function * (next) {
+    const call = []
+    const ctx = {}
+    const mw = convert(function * (next) {
       assert.ok(ctx === this)
       call.push(1)
       yield next
@@ -49,12 +49,12 @@ describe('convert()', () => {
   })
 
   it('should work with `yield* next`', () => {
-    let call = []
-    let ctx = {}
-    let mw = convert(function * (next) {
+    const call = []
+    const ctx = {}
+    const mw = convert(function * (next) {
       assert.ok(ctx === this)
       call.push(1)
-      yield* next
+      yield * next
       call.push(3)
     })
 
@@ -65,14 +65,18 @@ describe('convert()', () => {
       assert.deepEqual(call, [1, 2, 3])
     })
   })
+
+  it('should throw', () => {
+    assert.throws(() => convert('foo'))
+  })
 })
 
 describe('convert.compose()', () => {
   it('should work', () => {
-    let call = []
-    let context = {}
+    const call = []
+    const context = {}
     let _context
-    let mw = convert.compose([
+    const mw = convert.compose([
       function * name (next) {
         call.push(1)
         yield next
@@ -86,7 +90,7 @@ describe('convert.compose()', () => {
       },
       function * (next) {
         call.push(3)
-        yield* next
+        yield * next
         call.push(9)
       },
       co.wrap(function * (ctx, next) {
@@ -116,10 +120,10 @@ describe('convert.compose()', () => {
   })
 
   it('should work too', () => {
-    let call = []
-    let context = {}
+    const call = []
+    const context = {}
     let _context
-    let mw = convert.compose(
+    const mw = convert.compose(
       (ctx, next) => {
         call.push(1)
         return next().catch(() => {
@@ -133,7 +137,7 @@ describe('convert.compose()', () => {
       },
       function * (next) {
         call.push(3)
-        yield* next
+        yield * next
         call.push(-1) // should not call this
       },
       (ctx, next) => {
@@ -151,7 +155,7 @@ describe('convert.compose()', () => {
 
 describe('convert.back()', () => {
   it('should work with koa 1', done => {
-    let app = new KoaV1()
+    const app = new KoaV1()
 
     app.use(function * (next) {
       this.body = [1]
@@ -178,8 +182,27 @@ describe('convert.back()', () => {
       .end(done)
   })
 
+  it('should work too', (done) => {
+    const app = new KoaV1()
+
+    app.use(function * (next) {
+      this.body = [1]
+      yield next
+      this.body.push(3)
+    })
+
+    app.use(convert.back(function * (next) {
+      this.body.push(2)
+    }))
+
+    request(app.callback())
+      .get('/')
+      .expect(200, [1, 2, 3])
+      .end(done)
+  })
+  
   it('should guard multiple calls', done => {
-    let app = new KoaV1()
+    const app = new KoaV1()
 
     app.use(function * (next) {
       try {
@@ -203,13 +226,17 @@ describe('convert.back()', () => {
   })
 
   it('should inherit the original middleware name', () => {
-    let mw = convert.back(function testing (ctx, next) {})
+    const mw = convert.back(function testing (ctx, next) {})
     assert.strictEqual(mw._name, 'testing')
+  })
+
+  it('should throw with koa 1', () => {
+    assert.throws(() => convert.back('foo'))
   })
 })
 
 describe('migration snippet', () => {
-  let app = new Koa()
+  const app = new Koa()
 
   // snippet
   const _use = app.use
@@ -231,7 +258,7 @@ describe('migration snippet', () => {
 
   app.use(function * (next) {
     this.body.push(3)
-    yield* next
+    yield * next
     this.body.push(7)
   })
 
